@@ -47,3 +47,83 @@ Which database will your application use? [MySQL]:
 [sqlsrv] SQL Server
 >
 ```
+
+### Add typescript support
+
+Install Typescript with NPM. Change vite.config.js to vite.config.ts and then add configuration as follows.
+
+```ts
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import vue from '@vitejs/plugin-vue';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/js/app.ts'],
+            refresh: true,
+        }),
+        vue({
+            template: {
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
+            },
+        }),
+    ],
+});
+```
+Delete ```bootstrap.js``` in ```resources/js/``` and change ```app.js``` to ```main.ts```. And then load ```vue``` in ```main.ts``` with ```createdApp``` and add ```App``` component to application.
+
+```ts
+import { createApp } from 'vue';
+import App from './App.vue';
+
+createApp(App).mount('#app');
+```
+
+Make a html document in a new file ```main.blade.php``` and add Typescript to the document.
+And don't forget to div element with ```id="app"```.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Laravel SPA with Typescript Vue</title>
+</head>
+
+<body>
+    <div id="app"></div>
+    @vite('resources/js/main.ts')
+</body>
+
+</html>
+
+```
+
+Route ```main.blade.php``` to ```web.php``` and change path ```/``` to ```main```.
+```ts
+
+Route::get('/', function () {
+    return view('main');
+});
+```
+
+Last but not least. Insert Typescript to tempalate in App.vue to show the value of ```salam```.
+
+```ts
+<template>
+  {{ salam }}
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const salam = ref('Halu Dunia');
+</script>
+```
